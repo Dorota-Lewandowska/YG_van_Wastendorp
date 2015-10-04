@@ -23,7 +23,6 @@ if(filter_variable==TRUE){
   file1<-file[file$filter == filter_value, ]
 }
 
-
 ##define variables (these will be defined by user in app)
 weight<-"weight_dummy"
 
@@ -37,14 +36,10 @@ default_values<-TRUE##user imput  ##############################################
 
 
 
-
-
 ###choose only the variables you need
 cols <- c(weight, too_expensive,too_cheap, expensive, cheap)
 
 file<-file[,cols]
-
-
 
 ##rename column names 
 
@@ -65,9 +60,6 @@ file<-file[!file$too_expensive > user_treshold, ]
 file<-file[!file$too_cheap > user_treshold, ]
 file<-file[!file$expensive > user_treshold, ]
 file<-file[!file$cheap > user_treshold, ]
-
-
-
 
 
 ###calculate frequencies for every of 4 measures
@@ -94,15 +86,10 @@ for (i in 2:(nrow(freq_too_cheap)))
 freq_too_cheap<-freq_too_cheap[, c("sum","val")]
 
 
-
-
-
 freq_exp<-as.data.frame(as.matrix((cumsum(wtd.table(file$expensive, weights=file$weight, type='table', normwt=FALSE, na.rm=TRUE)))))
 freq_exp$value<-row.names(freq_exp)
 colnames(freq_exp)<-c("sum", "val")
 freq_exp$val<-as.integer(freq_exp$val)
-
-
 
 
 
@@ -179,9 +166,6 @@ val[nrow(val),2]<-100
 val[nrow(val),3]<-0
 val[nrow(val),4]<-100
 val[nrow(val),5]<-0
-
-
-
 
 
 ###Impute values
