@@ -7,27 +7,25 @@ library(Hmisc)
 library(reshape)
 library(zoo)
 
-
 file<-read.spss("test_data.sav", use.value.labels=FALSE, to.data.frame=TRUE)
 
 #######additional for app ##########work on how to add it 
- filter_variable <- zzzz
- filter_value  <-zzzz
- filter = c(TRUE< FALSE)
- if(filter_variable==TRUE){
+filter_variable <- zzzz
+filter_value  <-zzzz
+filter = c(TRUE< FALSE)
+if(filter_variable==TRUE){
   
-   cols_filt <- c(weight, too_expensive,too_cheap, expensive, cheap, filter_variable)
-   file<-file[,cols_filt]
-   cols_filt <- c("weight", "too_expensive","too_cheap", "expensive", "cheap", "filter")
-   colnames(file) <- cols_filt
-   file<- file[complete.cases(file), ]
-   file1<-file[file$filter == filter_value, ]
- }
-
+  cols_filt <- c(weight, too_expensive,too_cheap, expensive, cheap, filter_variable)
+  file<-file[,cols_filt]
+  cols_filt <- c("weight", "too_expensive","too_cheap", "expensive", "cheap", "filter")
+  colnames(file) <- cols_filt
+  file<- file[complete.cases(file), ]
+  file1<-file[file$filter == filter_value, ]
+}
 
 
 ##define variables (these will be defined by user in app)
-weight<-"weight"
+weight<-"weight_dummy"
 
 too_expensive<-"q76"
 too_cheap<-"q77"
@@ -35,18 +33,16 @@ expensive<-"q78"
 cheap<-"q79"
 
 default_values<-TRUE##user imput  #######################################################IMPORTANT FOR APP
-#user_treshold<-10000            #######################################################ONLY NEEDED IF default_value = FALSE
+#user_treshold<-10000            ########################################################ONLY NEEDED IF default_value = FALSE
 
 
 
 
-  
+
 ###choose only the variables you need
 cols <- c(weight, too_expensive,too_cheap, expensive, cheap)
 
 file<-file[,cols]
-
-file<- file[complete.cases(file), ]
 
 
 
@@ -61,6 +57,8 @@ file$too_expensive[file$too_expensive<0] <- NA
 file$too_cheap[file$too_cheap<0] <- NA
 file$expensive[file$expensive<0] <- NA
 file$cheap[file$cheap<0] <- NA
+
+file<- file[complete.cases(file), ]
 
 ##if treshold set up - remove cases with these extreme values
 file<-file[!file$too_expensive > user_treshold, ]
@@ -79,10 +77,24 @@ freq_too_exp$value<-row.names(freq_too_exp)
 colnames(freq_too_exp)<-c("sum", "val")
 freq_too_exp$val<-as.integer(freq_too_exp$val)
 
+
 freq_too_cheap<-as.data.frame(as.matrix((cumsum(wtd.table(file$too_cheap, weights=file$weight, type='table', normwt=FALSE, na.rm=TRUE)))))
 freq_too_cheap$value<-row.names(freq_too_cheap)
-colnames(freq_too_cheap)<-c("sum", "val")
+colnames(freq_too_cheap)<-c("sum1", "val")
 freq_too_cheap$val<-as.integer(freq_too_cheap$val)
+
+freq_too_cheap$sum[1]<-freq_too_cheap$sum1 [nrow(freq_too_cheap)]
+
+
+for (i in 2:(nrow(freq_too_cheap)))
+{
+  freq_too_cheap$sum[i]<- (freq_too_cheap$sum[1]) - (freq_too_cheap$sum1[i-1])
+}
+
+freq_too_cheap<-freq_too_cheap[, c("sum","val")]
+
+
+
 
 
 freq_exp<-as.data.frame(as.matrix((cumsum(wtd.table(file$expensive, weights=file$weight, type='table', normwt=FALSE, na.rm=TRUE)))))
@@ -90,10 +102,25 @@ freq_exp$value<-row.names(freq_exp)
 colnames(freq_exp)<-c("sum", "val")
 freq_exp$val<-as.integer(freq_exp$val)
 
+
+
+
+
 freq_cheap<-as.data.frame(as.matrix((cumsum(wtd.table(file$cheap, weights=file$weight, type='table', normwt=FALSE, na.rm=TRUE)))))
 freq_cheap$value<-row.names(freq_cheap)
-colnames(freq_cheap)<-c("sum", "val")
+colnames(freq_cheap)<-c("sum1", "val")
 freq_cheap$val<-as.integer(freq_cheap$val)
+
+
+freq_cheap$sum[1]<-freq_cheap$sum1 [nrow(freq_cheap)]
+
+
+for (i in 2:(nrow(freq_cheap)))
+{
+  freq_cheap$sum[i]<- (freq_cheap$sum[1]) - (freq_cheap$sum1[i-1])
+}
+
+freq_cheap<-freq_cheap[, c("sum","val")]
 
 
 ###Generate a table with all measures for all possible prices (from 0 to max)
@@ -143,15 +170,15 @@ rm(a,b,c,d,file, freq_cheap, freq_too_cheap, freq_exp, freq_too_exp)
 
 ###impute values
 val[1,2]<-0
-val[1,3]<-0
+val[1,3]<-100
 val[1,4]<-0
-val[1,5]<-0
+val[1,5]<-100
 
 
 val[nrow(val),2]<-100
+val[nrow(val),3]<-0
 val[nrow(val),4]<-100
-val[nrow(val),3]<-100
-val[nrow(val),5]<-100
+val[nrow(val),5]<-0
 
 
 
@@ -164,10 +191,6 @@ val$expensive <- na.locf(val$expensive)
 val$cheap <- na.locf(val$cheap, fromLast = TRUE)
 
 
-###Reverse order of 'cheap' and 'too cheap' 100 minus 1 formula
-
-val$too_cheap<-100 - (val$too_cheap) 
-val$cheap<-100 - (val$cheap) 
 
 
 
