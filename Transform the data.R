@@ -21,28 +21,43 @@ myfunction <- function(file_name=NULL,too_expensive=NULL, too_cheap=NULL, cheap=
   ###Apply filter
   if(filter==TRUE){
     
-    cols_filt <- c(too_expensive,too_cheap, expensive, cheap, filter_variable, weight)
+    
+    if (weighting==FALSE){
+    cols_filt <- c(too_expensive,too_cheap, expensive, cheap, filter_variable, "weight")
     file<-file[,cols_filt]
     file<- file[complete.cases(file), ]
+    } else
+    {
+      cols_filt <- c(too_expensive,too_cheap, expensive, cheap, filter_variable, weight)
+      file<-file[,cols_filt]
+      file<- file[complete.cases(file), ]        
+    }
+      cols_filt <- c("too_expensive","too_cheap", "expensive", "cheap", "filter", "weight")
+      colnames(file) <- cols_filt
     
-    cols_filt <- c("too_expensive","too_cheap", "expensive", "cheap", "filter", "weight")
-    colnames(file) <- cols_filt
-    
-    file<-file[file$filter == filter_value, ]
-    cols_filt <- c("too_expensive","too_cheap", "expensive", "cheap", "weight")
-    file<-file[,cols_filt]       
+      file<-file[file$filter == filter_value, ]
+      cols_filt <- c("too_expensive","too_cheap", "expensive", "cheap", "weight")
+      file<-file[,cols_filt]       
   }
   
   ###choose only the variables you need - make sure they are in the right order
+  
   if(filter==FALSE){
-    
-    cols <- c(too_expensive,too_cheap, expensive, cheap, "weight")
-    file<-file[,cols]
+    if(weighting == FALSE)
+    {
+      cols <- c(too_expensive,too_cheap, expensive, cheap, "weight")
+      file<-file[,cols]
+    } else{
+      
+      cols <- c(too_expensive,too_cheap, expensive, cheap, weight)
+      file<-file[,cols]
+    }
   }
+  
   
   ##choose only variables that are needed
   
-  ##rename column names 
+  ##rename column namess 
   cols_new <- c("too_expensive","too_cheap", "expensive", "cheap", "weight")
   colnames(file) <- cols_new
   
