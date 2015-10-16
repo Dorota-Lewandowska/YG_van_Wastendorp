@@ -49,7 +49,7 @@ file_name<-"test_data.sav"
 ###TESTING2 - weighting, no filters, no treshold
 ##########
 
-myfunction(file_name="test_data.sav",too_expensive="q76", too_cheap="q77", 
+myfunction(file_name="",too_expensive="q76", too_cheap="q77", 
            cheap="q79", expensive="q78",weighting=TRUE,
            weight="weight_exampl", filter=FALSE, filter_variable=FALSE,
            filter_value=NULL, leave_high_records=TRUE, user_treshold=NULL )
@@ -120,7 +120,7 @@ filter_value=0
 myfunction(file_name="test_data.sav",too_expensive="q76", too_cheap="q77", 
            cheap="q79", expensive="q78",weighting=FALSE,
            weight=NULL, filter=TRUE, filter_variable="child01",
-           filter_value=0, leave_high_records=FALSE, user_treshold=1000 ) 
+           filter_value=0, leave_high_records=FALSE, user_treshold=200 ) 
 
 
 myfunction(file_name="test_data.sav",too_expensive="q76", too_cheap="q77", 
@@ -149,7 +149,7 @@ filter_value=0
 myfunction(file_name="test_data.sav",too_expensive="q76", too_cheap="q77", 
            cheap="q79", expensive="q78",weighting=TRUE,
            weight="weight_exampl", filter=TRUE, filter_variable="child01",
-           filter_value=0, leave_high_records=FALSE, user_treshold=500 )
+           filter_value=0, leave_high_records=FALSE, user_treshold=5000 )
 
 
 weighting=TRUE
@@ -193,7 +193,7 @@ file_name<-"test_data.sav"
 myfunction(file_name="test_data.sav",too_expensive="q76", too_cheap="q77", 
            cheap="q79", expensive="q78",weighting=TRUE,
            weight="weight_exampl", filter=FALSE, filter_variable=FALSE,
-           filter_value=NULL, leave_high_records=FALSE, user_treshold=200 )
+           filter_value=NULL, leave_high_records=FALSE, user_treshold=1000)
 
 
 weighting=TRUE
