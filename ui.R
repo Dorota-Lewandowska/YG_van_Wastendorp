@@ -19,7 +19,7 @@ shinyUI(fluidPage(
     tags$br(),
     
     ###Upload file
-    fileInput('datafile', 'Choose SPS file'),
+    fileInput('datafile', 'Choose SPSS file'),
     
     uiOutput("too_expensive"),
     uiOutput("too_cheap"),
